@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{eb40f4c3-a3e2-4f73-9bb2-89f2614684b9}</ProjectGuid>
     <ProjectHome>..\</ProjectHome>
-    <StartupFile />
+    <StartupFile>start.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -18,5 +18,13 @@
   <PropertyGroup>
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="adb.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="start.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
