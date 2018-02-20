@@ -1,9 +1,14 @@
-"""starter"""
+"""Starter"""
 import msvcrt
 import adb
 
-out = adb.adb_sc() # screenshots
-if out == 0: # exit the program
-    print('Press any key to continue . . .')
-    msvcrt.getch()
-    exit()
+def main():
+    """Main function"""
+    out = adb.adb_sc() # screenshots
+    if out == 0: # error
+        print('Press any key to continue . . .')
+        msvcrt.getch()
+        exit()
+
+if __name__ == '__main__':
+    main()
