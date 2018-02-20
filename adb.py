@@ -1,16 +1,19 @@
-"""调用ADB"""
-import os
+"""Transfer the ADB module"""
+import subprocess
+import re
 
 def adb_sc():
-    """ADB截图"""
-    os.chdir('adb')
-    out = os.popen('adb devices').read() # 检查设备状态
-    print(out)
-    if 'device' not in str.split(out):
-        print('请检查设备状态\n')
-        return(0)
+    """screenshots"""
+    out = subprocess.run(r'adb\adb devices', stdout=subprocess.PIPE)
+    out = re.split(r"b'|\\t|\\n|\\r", out.stdout.__str__())
+    # Check the devices status
+    if 'device' not in out:
+        print('Please check the devices status. \n')
+        return 0
     else:
-        os.popen('adb shell screencap /sdcard/screen.png') # ADB工具截图
-        os.popen('adb pull /sdcard/screen.png ..') # 拉取截图至项目根目录
-        print('初始截图完成')
-        return(1)
+        subprocess.run(r'adb\adb shell screencap /sdcard/screen.png') # ADB screenshots
+        subprocess.run(r'adb\adb pull /sdcard/screen.png .') # Copy the screenshot to the project root directory
+        if (input('The initial screenshot is completed. \nContinue? (y/n) ') in ['Y', 'y']):
+            return 1
+        else:
+            return 0
