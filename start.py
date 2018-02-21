@@ -1,14 +1,13 @@
 """Starter"""
-import msvcrt
-import adb
+import adb_utils
+
 
 def main():
     """Main function"""
-    out = adb.adb_sc() # screenshots
-    if out == 0: # error
-        print('Press any key to continue . . .')
-        msvcrt.getch()
-        exit()
+    out = adb_utils.adb_sc()  # screenshots
+    if not out:
+        print("We cannot capture the screenshot of your device. Please try again.")
+
 
 if __name__ == '__main__':
     main()
