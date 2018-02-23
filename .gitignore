@@ -104,4 +104,4 @@ ENV/
 Visual_Studio/
 
 # img_proc
-screen.png
+*.png
