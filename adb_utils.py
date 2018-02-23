@@ -9,6 +9,7 @@ def adb_sc():
     out = re.split(r"b'|\\t|\\n|\\r", out.stdout.__str__())
     if 'device' not in out:  # Check the devices status
         print("Please check the devices status.")
+        print("We cannot capture the screenshot of your device. Please try again.")
         return False
     else:
         subprocess.run('adb/adb shell screencap /sdcard/screen.png')  # ADB screenshots
@@ -16,4 +17,5 @@ def adb_sc():
         if input("The initial screenshot is completed. \nContinue? (y/n) ") in ['Y', 'y']:  # Whether to start
             return True
         else:
+            print("You canceled your operation. ")
             return False
