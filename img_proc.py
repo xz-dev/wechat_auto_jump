@@ -42,7 +42,7 @@ def find_piece(img, edge_img):
                     if h > h_bottom:
                         h_bottom = h
     h_center = int(0.92857 * h_bottom + 0.071423 * h_top)
-    # git the hight of piece
+    # get the hight of piece
     if h_center == 0:
         print("Please confirm whether the screen is the game interface. ")
         return False
@@ -55,7 +55,7 @@ def find_piece(img, edge_img):
                 x_left = x_right = x
             else:
                 x_right = x
-        if x_right - x_left > width * 0.03125:
+        if x - x_left > width * 0.035:
             break
     x_center = int((x_left + x_right) * 0.5)
     # get the symmetry axis
