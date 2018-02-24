@@ -1,5 +1,9 @@
 """Starter"""
 import cv2
+import numpy as np
+
+import time
+import random
 
 import adb_utils
 import img_proc
@@ -7,11 +11,13 @@ import img_proc
 
 def main():
     """Main function"""
-    out = adb_utils.adb_sc()  # screenshots
-    if out:
-        print("Wait...")
-        # platform_position = 0
-        img, edge_img = img_proc.edge_detection()
+    i = 0
+    while True:
+        out = adb_utils.adb_sc()  # screenshots
+        if out:
+            print("Wait...")
+            # platform_position = 0
+            img, edge_img = img_proc.edge_detection()
 
         avatar_position, top_left, bottom_right = img_proc.find_avatar(img, edge_img)
         if avatar_position:
@@ -27,7 +33,11 @@ def main():
             img[top_left[0], top_left[1]] = (0, 255, 0)  # green
             img[bottom_right[0], bottom_right[1]] = (0, 0, 255)  # red
             # mark the position in the image
-            cv2.imwrite('images/center.png', img)
+            cv2.imwrite('images/center_{}.png'.format(i), img)
+            i += 1
+            dis = np.sqrt((avatar_position[0] - platform_position[0]) ** 2 + (avatar_position[1] - platform_position[1]) ** 2)
+            adb_utils.adb_touch(int(1.45 * dis))
+            time.sleep(random.uniform(0.5, 1.2))
 
 
 if __name__ == '__main__':
