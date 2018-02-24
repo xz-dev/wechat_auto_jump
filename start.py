@@ -17,10 +17,10 @@ def main():
         if avatar_position:
             if avatar_position[1] < img.shape[1] / 2:
                 # if avatar on the left, scanning right
-                platform_position = img_proc.find_platform(img, edge_img, left=avatar_position[1] + img.shape[1] * 0.03125)
+                platform_position = img_proc.find_platform(img, edge_img, left=avatar_position[1] + img.shape[1] * 0.045)
             else:
                 # if avatar on the right, scanning left
-                platform_position = img_proc.find_platform(img, edge_img, right=avatar_position[1])
+                platform_position = img_proc.find_platform(img, edge_img, right=avatar_position[1] - img.shape[1] * 0.045)
 
             img[avatar_position[0], avatar_position[1]] = (255, 0, 0)
             img[platform_position[0], platform_position[1]] = (225, 0, 0)
