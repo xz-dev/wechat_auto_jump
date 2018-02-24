@@ -36,8 +36,8 @@ def main():
             cv2.imwrite('images/center_{}.png'.format(i), img)
             i += 1
             dis = np.sqrt((avatar_position[0] - platform_position[0]) ** 2 + (avatar_position[1] - platform_position[1]) ** 2)
-            adb_utils.adb_touch(int(1.45 * dis))
-            time.sleep(random.uniform(0.5, 1.2))
+            adb_utils.adb_touch(int(1.33 * dis))
+            time.sleep(random.uniform(1.0, 1.2))
 
 
 if __name__ == '__main__':
