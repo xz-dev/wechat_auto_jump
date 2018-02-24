@@ -6,9 +6,7 @@ import numpy as np
 def edge_detection(read_img='images/screen.png', save_name='images/edge.png'):
     """Canny edge detection"""
     img = cv2.imread(read_img)  # read image
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     edge_img = cv2.Canny(img, 75, 100)
-    # edge_img = cv2.Canny(img_gray, 75, 100)
     cv2.imwrite(save_name, edge_img)
     return img, edge_img
 
@@ -24,8 +22,8 @@ def find_edge(edge_img, left, right, top=0.20, bottom=0.70):
     return edge_positions[0] + int(height * top), edge_positions[1] + int(width * left)
 
 
-def find_piece(img, edge_img):
-    """find position of the piece"""
+def find_avatar(img, edge_img):
+    """find position of the avatar"""
     height = img.shape[0]
     width = img.shape[1]
     h_top = x_left = x_right = 0
@@ -42,7 +40,7 @@ def find_piece(img, edge_img):
                     if h > h_bottom:
                         h_bottom = h
     h_center = int(0.92857 * h_bottom + 0.071423 * h_top)
-    # get the height of piece
+    # get the height of avatar
     if h_center == 0:
         print("Please confirm whether the screen is the game interface. ")
         return False
@@ -59,8 +57,8 @@ def find_piece(img, edge_img):
             break
     x_center = int((x_left + x_right) * 0.5)
     # get the symmetry axis
-    piece_position = (h_center, x_center)
-    return piece_position, (h_top, x_left), (h_bottom, x_right)
+    avatar_position = (h_center, x_center)
+    return avatar_position, (h_top, x_left), (h_bottom, x_right)
 
 
 def find_platform(img, edge_img, left=0, right=0):
@@ -77,9 +75,7 @@ def find_platform(img, edge_img, left=0, right=0):
     edge_positions = find_edge(edge_img, left=left / width, right=right / width, bottom=0.50)
     if edge_positions:
         for h, x in zip(*edge_positions):
-            if platform_bgr[0] == -1 \
-                    and (img[h][x] == img[h + 1][x]).all() \
-                    and (img[h][x] == img[h + 2][x]).all() \
+            if platform_bgr[0] == -1 and (img[h][x] == img[h + 1][x]).all() and (img[h][x] == img[h + 2][x]).all() \
                     and (img[h][x] == img[h + 3][x]).all():
                 # find the color of the platform
                 platform_bgr = img[h][x]
