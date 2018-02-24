@@ -15,7 +15,7 @@ def adb_sc():
         subprocess.run('adb/adb shell screencap /sdcard/screen.png')  # ADB screenshots
         if not os.path.isdir('images'):
             os.mkdir('images')
-        subprocess.run('adb/adb pull /sdcard/screen.png images/')  # Copy the screenshot to the project root directory
+        subprocess.run('adb/adb pull /sdcard/screen.png images/screen.png')  # Copy the screenshot to the project root directory
         return True
 
 
