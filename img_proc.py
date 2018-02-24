@@ -32,9 +32,16 @@ def find_avatar(img, edge_img):
         for h, x in zip(*edge_positions):
             if h > h_top:
                 pixel = img[h][x]
-                if pixel[0] in list(range(80, 84)) + list(range(70, 75)) \
-                        and pixel[1] in list(range(53, 59)) + list(range(40, 45)) \
-                        and pixel[2] in list(range(55, 60)) + list(range(40, 45)):
+                if pixel[0] in list(range(95, 105)) \
+                        and pixel[1] in list(range(55, 61)) \
+                        and pixel[2] in list(range(50, 60)):
+                        if not h_top:
+                            h_top = h_bottom = h
+                        if h > h_bottom:
+                            h_bottom = h
+                elif  pixel[0] in list(range(59, 65)) \
+                        and pixel[1] in list(range(51, 55)) \
+                        and pixel[2] in  list(range(51, 55)):
                     if not h_top:
                         h_top = h_bottom = h
                     if h > h_bottom:
@@ -75,8 +82,10 @@ def find_platform(img, edge_img, left=0, right=0):
     edge_positions = find_edge(edge_img, left=left / width, right=right / width, bottom=0.50)
     if edge_positions:
         for h, x in zip(*edge_positions):
-            if platform_bgr[0] == -1 and (img[h][x] == img[h + 1][x]).all() and (img[h][x] == img[h + 2][x]).all() \
-                    and (img[h][x] == img[h + 3][x]).all():
+            if platform_bgr[0] == -1 \
+                and (img[h][x] == img[h + 1][x]).all()\
+                and (img[h][x] == img[h + 2][x]).all() \
+                and (img[h][x] == img[h + 3][x]).all():
                 # find the color of the platform
                 platform_bgr = img[h][x]
                 break
