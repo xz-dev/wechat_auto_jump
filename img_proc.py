@@ -99,6 +99,24 @@ def find_platform(img, edge_img, left=0, right=0):
                 else:
                     edge_right = (h, x)
     # find the center of platform
+    if broadband_max[0] == 0 or broadband_max[1] + (broadband_max[2] + 1) // 2 == 0:
+        bg_color = img[0, 0]
+        if edge_positions:
+            for h, x in zip(*edge_positions):
+                pixel = img[h][x]
+                if pixel[0] not in range(bg_color[0] - 2, bg_color[0] + 2) \
+                    and pixel[1] not in range(bg_color[1] - 2, bg_color[1] + 2) \
+                    and pixel[2] not in range(bg_color[2] - 2, bg_color[2] + 2):
+                    if h > tmp_h:
+                        tmp_h = h
+                        edge_left = (h, x)
+                        if edge_right and edge_right[1] - edge_left[1] > broadband_max[2]:
+                            broadband_max = (edge_right[0], edge_left[1], edge_right[1] - edge_left[1])
+                        elif edge_right and edge_right[1] - edge_left[1] <= broadband_max[2]:
+                            break
+                    else:
+                        edge_right = (h, x)
+    # find the center of platform
     platform_position = (broadband_max[0], broadband_max[1] + (broadband_max[2] + 1) // 2)
     return platform_position
 
