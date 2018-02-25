@@ -13,18 +13,31 @@ def main():
     """Main function"""
     i = 0
     out = True
+
     try:
         with open('profile/default.txt', 'r') as f:
-            phone_model = f.read()
+            str = f.read().split()
+            phone_model = str[0]
+            debug_mode = str[1]
     except FileNotFoundError:
-        phone_model = input('Please enter your cellphone model now. ')
+        phone_model = input("Please enter your cellphone model now. ")
+        debug_mode = input("Whether to open the debug mode? (y/n)")
+        if debug_mode in ['y', 'Y']:
+            debug_mode = 'True'
+        else:
+            debug_mode = 'False'
         with open('profile/default.txt', 'w') as f:
             f.write(phone_model)
-    else:
-        with open('profile/' + str(phone_model) + '.txt', 'r') as f:
-            coefficient = float(f.read())
-    print('Current configuration: ' + str(phone_model))
+            f.write(' ')
+            f.write(debug_mode)
+
+    with open('profile/' + phone_model + '.txt', 'r') as f:
+        coefficient = float(f.read())
+    print("Current configuration: " + phone_model)
+    print("Debug mode: " + debug_mode)
+    print("Profile: profile/default.txt")
     # Determine the configuration of cellphone model
+    # Whether to open the debug mode
 
     while True and out:
         out = adb_utils.adb_sc()  # screenshots
@@ -46,7 +59,8 @@ def main():
                 img[platform_position[0], platform_position[1]] = (225, 0, 0)
                 cv2.rectangle(img, (top_left[1], top_left[0]), (bottom_right[1], bottom_right[0]), (255, 255, 255), 2)
                 # mark the position in the image
-                cv2.imwrite('images/center_{}.png'.format(i), img)
+                if debug_mode == 'True':
+                    cv2.imwrite('images/center_{}.png'.format(i), img)
                 i += 1
                 dis = np.sqrt((avatar_position[0] - platform_position[0]) ** 2 + (avatar_position[1] - platform_position[1]) ** 2)
                 adb_utils.adb_touch(int(coefficient * dis))
