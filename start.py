@@ -13,6 +13,19 @@ def main():
     """Main function"""
     i = 0
     out = True
+    try:
+        with open('profile/default.txt', 'r') as f:
+            phone_model = f.read()
+    except FileNotFoundError:
+        phone_model = input('Please enter your cellphone model now. ')
+        with open('profile/default.txt', 'w') as f:
+            f.write(phone_model)
+    else:
+        with open('profile/' + str(phone_model) + '.txt', 'r') as f:
+            coefficient = float(f.read())
+    print('Current configuration: ' + str(phone_model))
+    # Determine the configuration of cellphone model
+
     while True and out:
         out = adb_utils.adb_sc()  # screenshots
         if out:
@@ -36,7 +49,7 @@ def main():
                 cv2.imwrite('images/center_{}.png'.format(i), img)
                 i += 1
                 dis = np.sqrt((avatar_position[0] - platform_position[0]) ** 2 + (avatar_position[1] - platform_position[1]) ** 2)
-                adb_utils.adb_touch(int(1.47 * dis))
+                adb_utils.adb_touch(int(coefficient * dis))
                 time.sleep(random.uniform(1.2, 1.4))
 
 
