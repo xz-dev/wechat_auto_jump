@@ -6,9 +6,10 @@ import numpy as np
 def edge_detection(read_img='images/screen.png', save_name='images/edge.png'):
     """Canny edge detection"""
     img = cv2.imread(read_img)  # read image
+    avatar_img = cv2.imread('images/player.png')
     edge_img = cv2.Canny(img, 75, 100)
     cv2.imwrite(save_name, edge_img)
-    return img, edge_img
+    return img, avatar_img, edge_img
 
 
 def find_edge(edge_img, left, right, top=0.20, bottom=0.70):
@@ -22,50 +23,36 @@ def find_edge(edge_img, left, right, top=0.20, bottom=0.70):
     return edge_positions[0] + int(height * top), edge_positions[1] + int(width * left)
 
 
-def find_avatar(img, edge_img):
+def multiscale_search(screen, avatar, scale=0.3, step=0.1):
+    h, w = avatar.shape
+    H, W = screen.shape
+    best_match = None
+    for s in np.arange(1 - scale, 1 + scale, step):
+        resized_screen = cv2.resize(screen, (int(W * s), int(H * s)))
+        res = cv2.matchTemplate(resized_screen, avatar, cv2.TM_CCOEFF_NORMED)
+        loc = np.where(res >= res.max())
+        pos_h, pos_w = loc[0][0], loc[1][0]
+        if best_match is None or res[pos_h][pos_w] > best_match[-1]:
+            best_match = (pos_h, pos_w, s, res[pos_h][pos_w])
+    if best_match is None:
+        return 0, 0, 0, 0
+    pos_h, pos_w, s, _ = best_match
+    h_top, x_left = int(pos_h / s), int(pos_w / s)
+    h_bottom, x_right = int((pos_h + h) / s), int((pos_w + w) / s)
+    return h_top, x_left, h_bottom, x_right
+
+
+def find_avatar(img, avatar_img):
     """find position of the avatar"""
-    height = img.shape[0]
-    width = img.shape[1]
-    h_top = x_left = x_right = 0
-    edge_positions = find_edge(edge_img, left=0.15, right=0.85)
-    if edge_positions:
-        for h, x in zip(*edge_positions):
-            if h > h_top:
-                pixel = img[h][x]
-                if pixel[0] in list(range(95, 105)) \
-                        and pixel[1] in list(range(55, 61)) \
-                        and pixel[2] in list(range(50, 60)):
-                        if not h_top:
-                            h_top = h_bottom = h
-                        if h > h_bottom:
-                            h_bottom = h
-                elif  pixel[0] in list(range(59, 65)) \
-                        and pixel[1] in list(range(51, 55)) \
-                        and pixel[2] in  list(range(51, 55)):
-                    if not h_top:
-                        h_top = h_bottom = h
-                    if h > h_bottom:
-                        h_bottom = h
-    h_center = int(0.92857 * h_bottom + 0.071423 * h_top)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    avatar_img = cv2.cvtColor(avatar_img, cv2.COLOR_BGR2GRAY)
+    h_top, x_left, h_bottom, x_right = multiscale_search(img, avatar_img)
+    h_center, w_center = int((h_top + 13 * h_bottom) / 14.), (x_left + x_right) // 2
     # get the height of avatar
     if h_center == 0:
         print("Please confirm whether the screen is the game interface. ")
         return False
-    for x in range(0, width):
-        pixel = img[h_top, x]
-        if pixel[0] in list(range(55, 84)) \
-                and pixel[1] in list(range(50, 65)) \
-                and pixel[2] in list(range(50, 80)):
-            if not x_left:
-                x_left = x_right = x
-            else:
-                x_right = x
-        if x_left != 0 and x - x_left > width * 0.035:
-            break
-    x_center = int((x_left + x_right) * 0.5)
-    # get the symmetry axis
-    avatar_position = (h_center, x_center)
-    return avatar_position, (h_top, x_left), (h_bottom, x_right)
+    return (h_center, w_center), (h_top, x_left), (h_bottom, x_right)
 
 
 def find_platform(img, edge_img, left=0, right=0):
@@ -83,9 +70,9 @@ def find_platform(img, edge_img, left=0, right=0):
     if edge_positions:
         for h, x in zip(*edge_positions):
             if platform_bgr[0] == -1 \
-                and (img[h][x] == img[h + 1][x]).all()\
-                and (img[h][x] == img[h + 2][x]).all() \
-                and (img[h][x] == img[h + 3][x]).all():
+                    and (img[h][x] == img[h + 1][x]).all() \
+                    and (img[h][x] == img[h + 2][x]).all() \
+                    and (img[h][x] == img[h + 3][x]).all():
                 # find the color of the platform
                 platform_bgr = img[h][x]
                 break
@@ -105,8 +92,8 @@ def find_platform(img, edge_img, left=0, right=0):
             for h, x in zip(*edge_positions):
                 pixel = img[h][x]
                 if pixel[0] not in range(bg_color[0] - 2, bg_color[0] + 2) \
-                    and pixel[1] not in range(bg_color[1] - 2, bg_color[1] + 2) \
-                    and pixel[2] not in range(bg_color[2] - 2, bg_color[2] + 2):
+                        and pixel[1] not in range(bg_color[1] - 2, bg_color[1] + 2) \
+                        and pixel[2] not in range(bg_color[2] - 2, bg_color[2] + 2):
                     if h > tmp_h:
                         tmp_h = h
                         edge_left = (h, x)
