@@ -3,13 +3,12 @@ import cv2
 import numpy as np
 
 
-def edge_detection(read_img='images/screen.png', save_name='images/edge.png'):
+def edge_detection(img, debug_mode = True, save_name='images/edge.png'):
     """Canny edge detection"""
-    img = cv2.imread(read_img)  # read image
-    avatar_img = cv2.imread('images/player.png')
-    edge_img = cv2.Canny(img, 75, 100)
-    cv2.imwrite(save_name, edge_img)
-    return img, avatar_img, edge_img
+    edge_img = cv2.Canny(img, 50, 75)
+    if debug_mode:
+        cv2.imwrite(save_name, edge_img)
+    return img, edge_img
 
 
 def find_edge(edge_img, left, right, top=0.20, bottom=0.70):
@@ -42,11 +41,10 @@ def multiscale_search(screen, avatar, scale=0.3, step=0.1):
     return h_top, x_left, h_bottom, x_right
 
 
-def find_avatar(img, avatar_img):
+def find_avatar(img, avatar_img, scale):
     """find position of the avatar"""
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    avatar_img = cv2.cvtColor(avatar_img, cv2.COLOR_BGR2GRAY)
-    h_top, x_left, h_bottom, x_right = multiscale_search(img, avatar_img)
+    h_top, x_left, h_bottom, x_right = multiscale_search(img, avatar_img, scale = scale)
     h_center, w_center = int((h_top + 13 * h_bottom) / 14.), (x_left + x_right) // 2
     # get the height of avatar
     if h_center == 0:
@@ -66,18 +64,25 @@ def find_platform(img, edge_img, left=0, right=0):
     broadband_max = (0, 0, 0)
     platform_bgr = (-1, -1, -1)
     tmp_h = -1
+    level = 0
     edge_positions = find_edge(edge_img, left=left / width, right=right / width, bottom=0.50)
     if edge_positions:
         for h, x in zip(*edge_positions):
-            if platform_bgr[0] == -1 \
-                    and (img[h][x] == img[h + 1][x]).all() \
-                    and (img[h][x] == img[h + 2][x]).all() \
-                    and (img[h][x] == img[h + 3][x]).all():
-                # find the color of the platform
-                platform_bgr = img[h][x]
-                break
+            if level > height * 0.06:
+                find_platform_spare(edge_positions)
+                level += 1
+                if platform_bgr[0] == -1 \
+                        and (img[h][x] == img[h + 1][x]).all() \
+                        and (img[h][x] == img[h + 2][x]).all() \
+                        and (img[h][x] == img[h + 3][x]).all():
+                    # find the color of the platform
+                    platform_bgr = img[h][x]
+                    break
         for h, x in zip(*edge_positions):
-            if (platform_bgr == img[h][x]).all():
+            pixel = img[h][x]
+            if pixel[0]  in range(platform_bgr[0] - 2, platform_bgr[0] + 2) \
+                    and pixel[1]  in range(platform_bgr[1] - 2, platform_bgr[1] + 2) \
+                    and pixel[2]  in range(platform_bgr[2] - 2, platform_bgr[2] + 2):
                 if h > tmp_h:
                     tmp_h = h
                     edge_left = (h, x)
@@ -86,23 +91,27 @@ def find_platform(img, edge_img, left=0, right=0):
                 else:
                     edge_right = (h, x)
     # find the center of platform
+    platform_position = (broadband_max[0], broadband_max[1] + (broadband_max[2] + 1) // 2)
     if broadband_max[0] == 0 or broadband_max[1] + (broadband_max[2] + 1) // 2 == 0:
-        bg_color = img[0, 0]
-        if edge_positions:
-            for h, x in zip(*edge_positions):
-                pixel = img[h][x]
-                if pixel[0] not in range(bg_color[0] - 2, bg_color[0] + 2) \
-                        and pixel[1] not in range(bg_color[1] - 2, bg_color[1] + 2) \
-                        and pixel[2] not in range(bg_color[2] - 2, bg_color[2] + 2):
-                    if h > tmp_h:
-                        tmp_h = h
-                        edge_left = (h, x)
-                        if edge_right and edge_right[1] - edge_left[1] > broadband_max[2]:
-                            broadband_max = (edge_right[0], edge_left[1], edge_right[1] - edge_left[1])
-                        elif edge_right and edge_right[1] - edge_left[1] <= broadband_max[2]:
-                            break
-                    else:
-                        edge_right = (h, x)
+        platform_position = find_platform_spare(edge_positions)
+    return platform_position
+
+
+def find_platform_spare(edge_positions):
+    broadband_max = (0, 0, 0)
+    edge_right = 0
+    tmp_h = -1
+    if edge_positions:
+        for h, x in zip(*edge_positions):
+            if h > tmp_h:
+                tmp_h = h
+                edge_left = (h, x)
+                if edge_right and edge_right[1] - edge_left[1] > broadband_max[2]:
+                    broadband_max = (edge_right[0], edge_left[1], edge_right[1] - edge_left[1])
+                elif edge_right and edge_right[1] - edge_left[1] <= broadband_max[2]:
+                    break
+            else:
+                edge_right = (h, x)
     # find the center of platform
     platform_position = (broadband_max[0], broadband_max[1] + (broadband_max[2] + 1) // 2)
     return platform_position

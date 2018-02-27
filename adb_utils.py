@@ -1,4 +1,5 @@
 """The ADB module"""
+import cv2
 import subprocess  # use run()
 import re  # use split()
 import os
@@ -17,8 +18,9 @@ def adb_sc():
         subprocess.run('adb/adb shell screencap /sdcard/screen.png')  # ADB screenshots
         if not os.path.isdir('images'):
             os.mkdir('images')
-        subprocess.run('adb/adb pull /sdcard/screen.png images/screen.png')  # Copy the screenshot to the project root directory
-        return True
+        subprocess.run('adb/adb pull /sdcard/screen.png %TEMP%/screen.png')  # Copy the screenshot to the project root directory
+        sc_img = cv2.imread('%TEMP%/screen.png')
+        return True, sc_img
 
 
 def adb_touch(time, h1=500, x1=500, h2=500, x2=500):
@@ -26,6 +28,6 @@ def adb_touch(time, h1=500, x1=500, h2=500, x2=500):
     x1 += random.randint(0, 50)
     h2 += random.randint(0, 50)
     x2 += random.randint(0, 50)
-    adb_swipe = 'adb/adb shell input swipe ' + str(h1) + ' ' + str(x1) + ' ' + str(h2) + ' ' + str(x2) + ' ' + str(time)
+    adb_swipe = 'adb/adb shell input swipe {x1} {h1} {x2} {h2} {time}'.format(h1=h1,x1=x1,h2=h2,x2=x2,time=time) 
     print(adb_swipe)
     subprocess.run(adb_swipe)
