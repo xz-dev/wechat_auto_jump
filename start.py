@@ -53,7 +53,7 @@ def main():
         out, img = adb_utils.adb_sc()  # screenshots
         if out:
             print("Wait...")
-            img,  edge_img = img_proc.edge_detection(img = img, debug_mode = debug_mode)
+            edge_img = img_proc.edge_detection(img = img, debug_mode = debug_mode)
 
             avatar_position, top_left, bottom_right = img_proc.find_avatar(img, avatar_img, scale)
             if avatar_position:

@@ -2,6 +2,7 @@
 import cv2
 import subprocess  # use run()
 import re  # use split()
+import tempfile
 import os
 import random
 
@@ -13,13 +14,14 @@ def adb_sc():
     if 'device' not in out:  # Check the devices status
         print("Please check the devices status.")
         print("We cannot capture the screenshot of your device. Please try again.")
-        return False
+        return False, None
     else:
         subprocess.run('adb/adb shell screencap /sdcard/screen.png')  # ADB screenshots
         if not os.path.isdir('images'):
             os.mkdir('images')
-        subprocess.run('adb/adb pull /sdcard/screen.png %TEMP%/screen.png')  # Copy the screenshot to the project root directory
-        sc_img = cv2.imread('%TEMP%/screen.png')
+        with tempfile.TemporaryDirectory() as tempDir:
+            subprocess.run('adb/adb pull /sdcard/screen.png {TEMP}/screen.png'.format(TEMP = tempDir))  # Copy the screenshot to the project root directory
+            sc_img = cv2.imread('{TEMP}/screen.png'.format(TEMP = tempDir))
         return True, sc_img
 
 
