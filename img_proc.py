@@ -8,7 +8,7 @@ def edge_detection(img, debug_mode = True, save_name='images/edge.png'):
     edge_img = cv2.Canny(img, 50, 75)
     if debug_mode:
         cv2.imwrite(save_name, edge_img)
-    return img, edge_img
+    return edge_img
 
 
 def find_edge(edge_img, left, right, top=0.20, bottom=0.70):
