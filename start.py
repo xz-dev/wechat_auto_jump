@@ -19,7 +19,7 @@ def main():
     avatar_img = cv2.cvtColor(avatar_img, cv2.COLOR_BGR2GRAY)
 
     try:
-        with open('profile/default.json', 'r') as f:
+        with open('config/default.json', 'r') as f:
             configuration = json.load(f)
             phone_model = configuration["cellType"]
             debug_mode = configuration["debug"]
@@ -30,22 +30,22 @@ def main():
             debug_mode = True
         else:
             debug_mode = False
-        with open('profile/default.json', 'w') as f:
+        with open('config/default.json', 'w') as f:
             configuration = {"cellType": phone_model, "debug": debug_mode}
             json.dump(configuration, f)
     try:
-        with open('profile/{cellPhone}.json'.format(cellPhone=phone_model), 'r') as f:
+        with open('config/{cellPhone}.json'.format(cellPhone=phone_model), 'r') as f:
             configuration = json.load(f)
             resolution = configuration["resolution"]
             coefficient = configuration["coefficient"]
     except FileNotFoundError:
         print("Please confirm 'default.json' is right or contact the provider. ")
-    with open('profile/{resolution}.json'.format(resolution=resolution), 'r') as f:
+    with open('config/{resolution}.json'.format(resolution=resolution), 'r') as f:
         configuration = json.load(f)
         scale = configuration["scale"]
     print("Current configuration: " + phone_model)
     print("Debug mode: " + str(debug_mode))
-    print("Profile: profile/default.json")
+    print("Config: config/default.json")
     # Determine the configuration of cellphone model
     # Whether to open the debug mode
 
