@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 
-def edge_detection(img, debug_mode = True, save_name='images/edge.png'):
+def edge_detection(img, debug_mode=True, save_name='images/edge.png'):
     """Canny edge detection"""
     edge_img = cv2.Canny(img, 50, 75)
     if debug_mode:
@@ -44,7 +44,7 @@ def multiscale_search(screen, avatar, scale=0.3, step=0.1):
 def find_avatar(img, avatar_img, scale):
     """find position of the avatar"""
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    h_top, x_left, h_bottom, x_right = multiscale_search(img, avatar_img, scale = scale)
+    h_top, x_left, h_bottom, x_right = multiscale_search(img, avatar_img, scale=scale)
     h_center, w_center = int((h_top + 13 * h_bottom) / 14.), (x_left + x_right) // 2
     # get the height of avatar
     if h_center == 0:
@@ -80,9 +80,9 @@ def find_platform(img, edge_img, left=0, right=0):
                     break
         for h, x in zip(*edge_positions):
             pixel = img[h][x]
-            if pixel[0]  in range(platform_bgr[0] - 2, platform_bgr[0] + 2) \
-                    and pixel[1]  in range(platform_bgr[1] - 2, platform_bgr[1] + 2) \
-                    and pixel[2]  in range(platform_bgr[2] - 2, platform_bgr[2] + 2):
+            if pixel[0] in range(platform_bgr[0] - 2, platform_bgr[0] + 2) \
+                    and pixel[1] in range(platform_bgr[1] - 2, platform_bgr[1] + 2) \
+                    and pixel[2] in range(platform_bgr[2] - 2, platform_bgr[2] + 2):
                 if h > tmp_h:
                     tmp_h = h
                     edge_left = (h, x)

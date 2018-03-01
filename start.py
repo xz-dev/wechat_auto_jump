@@ -31,19 +31,19 @@ def main():
         else:
             debug_mode = False
         with open('profile/default.json', 'w') as f:
-            configuration = {"cellType": phone_model, "dedug": debug_mode}
+            configuration = {"cellType": phone_model, "debug": debug_mode}
             json.dump(configuration, f)
-    try :
-        with open('profile/{cellPhone}.json'.format(cellPhone = phone_model), 'r') as f:
+    try:
+        with open('profile/{cellPhone}.json'.format(cellPhone=phone_model), 'r') as f:
             configuration = json.load(f)
             resolution = configuration["resolution"]
-            coefficient= configuration["coefficient"] 
+            coefficient = configuration["coefficient"]
     except FileNotFoundError:
-        print("Please confirm \"default.json\" is right or contact the provider. ")
-    with open('profile/{resolution}.json'.format(resolution = resolution), 'r') as f:
+        print("Please confirm 'default.json' is right or contact the provider. ")
+    with open('profile/{resolution}.json'.format(resolution=resolution), 'r') as f:
         configuration = json.load(f)
         scale = configuration["scale"]
-    print("Current configurationuration: " + phone_model)
+    print("Current configuration: " + phone_model)
     print("Debug mode: " + str(debug_mode))
     print("Profile: profile/default.json")
     # Determine the configuration of cellphone model
@@ -53,7 +53,7 @@ def main():
         out, img = adb_utils.adb_sc()  # screenshots
         if out:
             print("Wait...")
-            edge_img = img_proc.edge_detection(img = img, debug_mode = debug_mode)
+            edge_img = img_proc.edge_detection(img=img, debug_mode=debug_mode)
 
             avatar_position, top_left, bottom_right = img_proc.find_avatar(img, avatar_img, scale)
             if avatar_position:
@@ -72,7 +72,7 @@ def main():
                     cv2.imwrite('images/center_{}.png'.format(i), img)
                     i += 1
                 dis = np.sqrt((avatar_position[0] - platform_position[0]) ** 2 + (avatar_position[1] - platform_position[1]) ** 2)
-                adb_utils.adb_touch(int(coefficient * dis), h1 = avatar_position[0], x1 = avatar_position[1], h2 = platform_position[0], x2 = platform_position[1])
+                adb_utils.adb_touch(int(coefficient * dis), h1=avatar_position[0], x1=avatar_position[1], h2=platform_position[0], x2=platform_position[1])
         time.sleep(random.uniform(1.2, 1.4))
 
 
