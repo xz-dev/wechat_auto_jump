@@ -10,7 +10,7 @@
     2. 打开手机开发者模式并连接电脑
     3. 使用Python3运行start.py文件
     4. 参照软件消息进行下一步操作
-### 二、直接运行exe文件(由[pyinstaller](http://pyinstaller.org)生成)
+### 二、直接运行exe文件(文件由[pyinstaller](http://pyinstaller.org)生成, [从Nextcloud下载](http://cloud.xiangzhe.top/nextcloud/s/tfqMfwmexjkjoKs))
     1. 下载application_win.zip
     2. 在本地完全解压
     3. 打开手机开发者模式并连接电脑
