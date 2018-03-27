@@ -129,7 +129,3 @@ def img_cropped(left=0, right=0):
     cropped_pltform = img[height // 6: height * 2 // 3, left: right]
     cv2.imwrite('score.png', cropped_score)
     cv2.imwrite('pltform.png', cropped_pltform)
-
-
-def score_recognition():
-    """Score recognition"""
