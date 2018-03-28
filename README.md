@@ -1,8 +1,8 @@
 # 微信自动跳一跳工具
-![](https://img.shields.io/github/release/Deemo-x/wechat_auto_jump.svg)
+![](https://img.shields.io/badge/release-v0.8.0-blue.svg)
+![](https://img.shields.io/badge/language-python-yellowgreen.svg)
 ![](https://img.shields.io/github/issues/Deemo-x/wechat_auto_jump.svg)
 ![](https://img.shields.io/github/forks/Deemo-x/wechat_auto_jump.svg)
-![](https://img.shields.io/github/downloads/Deemo-x/wechat_auto_jump.svg)
 ![](https://img.shields.io/github/license/Deemo-x/wechat_auto_jump.svg)
 ## 使用方法
 ### 一、使用Python源码运行
@@ -18,7 +18,9 @@
     5. 参照软件消息进行下一步操作
 #### **如果你使用Linux系统并不想运行Python请联系我们**
 
+<br></br>
 
+## 适配
 当前适配机型:
 <font color = grean>
 Huawei P10, 
@@ -29,7 +31,42 @@ vivo x6s
 </font>
 <br>(如果没有你的机型请联系我们或参照config文件夹中mi6模板更改并上传给我们)</br>
 
-<br>该项目使用Python编写, 基于opencv与ADB工具。</br>
+### 自行适配方法(以Xiaomi6为例)
+<font color = yellow>
+    1. 创建 config/mi6.json
+</font>
+
+```python
+        # config/mi6.json
+        {
+	    "resolution": "1080p",
+            # 1080p替换为你的手机屏幕分辨率(目前支持1080p与2k)
+            # 如果分辨率不在其中, 请依照第二步创建自己的屏幕分辨率文件
+
+	    "coefficient": 1.37
+            # 1.37 为模拟点按时间系数, 暂时找不到规律, 请自行尝试
+        }
+```
+
+<font color = yellow>
+    2.创建 config/1080p.json
+</font>
+
+```python
+        # config/mi6.json
+        {
+	    "scale": 0.3
+            # 棋子识别系数, 与分辨率有正相关关系
+        }
+
+```
+<font color = red>
+&emsp;&emsp;json文件中请勿添加<font color = yellowgreen>#</font>后的提示字符
+</font>
+
+<br></br>
+
+该项目使用Python编写, 基于opencv与ADB工具。</br>
 如果你发现了程序的bug, 或者愿意参与本项目, 请提出问题或联系我们。
 
 邮箱: zxz1054855541@163.com
