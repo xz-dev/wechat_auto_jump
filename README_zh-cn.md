@@ -1,4 +1,5 @@
 # 微信自动跳一跳工具
+#**停止主动维护**
 
 ![release](https://img.shields.io/badge/release-v0.8.0-blue.svg)
 ![language](https://img.shields.io/badge/language-python-yellowgreen.svg)
