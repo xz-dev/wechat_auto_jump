@@ -1,5 +1,7 @@
 # WeChat Automatic Jump Tool
 
+#**This project is unmaintained.** 
+
 ![release](https://img.shields.io/badge/release-v0.8.0-blue.svg)
 ![language](https://img.shields.io/badge/language-python3.6-yellowgreen.svg)
 ![issues](https://img.shields.io/github/issues/Deemo-x/wechat_auto_jump.svg)
